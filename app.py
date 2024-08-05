@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 import base64
 from openai import OpenAI
 import cv2
-import markdown
 
 load_dotenv()
 
