@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theft Incident Report Generator</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #a8c0ff, #3f2b96);
+        }
+
+        .container {
+            max-width: 800px;
+            background: #444;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            color: white;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="file"],
+        input[type="number"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3f2b96;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #a8c0ff;
+        }
+
+        video {
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .report {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background-color: #555;
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Theft Incident Report Generator</h1>
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+            <div>
+                <label for="file">Upload Video:</label>
+                <input type="file" name="file" id="file" accept="video/*" required>
+            </div>
+            <div>
+                <label for="interval">Frame Interval (seconds):</label>
+                <input type="number" name="interval" id="interval" value="5" min="1" required>
+            </div>
+            <button type="submit">Generate Report</button>
+        </form>
+        <video id="videoPlayer" controls></video>
+        <div id="report" class="report" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('file').onchange = function(event) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                videoPlayer.src = url;
+                videoPlayer.style.display = 'block';
+            }
+        }
+
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.report_content) {
+                const reportDiv = document.getElementById('report');
+                reportDiv.textContent = data.report_content;
+                reportDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
