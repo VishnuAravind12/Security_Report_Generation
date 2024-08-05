@@ -1,2 +1,5 @@
 .env
 venv
+/frames
+/reports
+/__pycache__
